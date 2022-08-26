@@ -2,5 +2,7 @@
 build
 x86
 x64
+obj
+bin
 *.vcxproj.user
 *.tlog
