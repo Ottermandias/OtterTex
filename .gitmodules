@@ -1,0 +1,4 @@
+[submodule "DirectXTex"]
+	path = DirectXTex
+	url = git@github.com:Microsoft/DirectXTex.git
+	branch = main
