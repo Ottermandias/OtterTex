@@ -1,10 +1,37 @@
 ﻿using System;
-using System.Threading;
 
 namespace OtterTex;
 
 public abstract class ScratchImage
 {
+    public static ScratchImage Create()
+        => ScratchImageFactory.Instance.Create();
+
+    public static ScratchImage LoadFromDDSMemory(IntPtr source, int size, DDSParseFlags flags = DDSParseFlags.None)
+        => ScratchImageFactory.Instance.LoadFromDDSMemory(source, size, flags);
+
+    public static ScratchImage LoadFromDDSFile(string path, DDSParseFlags flags = DDSParseFlags.None)
+        => ScratchImageFactory.Instance.LoadFromDDSFile(path, flags);
+
+    public static ScratchImage LoadFromHDRMemory(IntPtr source, int size)
+        => ScratchImageFactory.Instance.LoadFromHDRMemory(source, size);
+
+    public static ScratchImage LoadFromHDRFile(string path)
+        => ScratchImageFactory.Instance.LoadFromHDRFile(path);
+
+    public static ScratchImage LoadFromTGAMemory(IntPtr source, int size, TGAParseFlags flags = TGAParseFlags.None)
+        => ScratchImageFactory.Instance.LoadFromTGAMemory(source, size, flags);
+
+    public static ScratchImage LoadFromTGAFile(string path, TGAParseFlags flags = TGAParseFlags.None)
+        => ScratchImageFactory.Instance.LoadFromTGAFile(path, flags);
+
+    public static ScratchImage LoadFromWICMemory(IntPtr source, int size, WICParseFlags flags = WICParseFlags.None)
+        => ScratchImageFactory.Instance.LoadFromWICMemory(source, size, flags);
+
+    public static ScratchImage LoadFromWICFile(string path, WICParseFlags flags = WICParseFlags.None)
+        => ScratchImageFactory.Instance.LoadFromWICFile(path, flags);
+
+
     public abstract ITexMeta     Meta       { get; }
     public abstract int          ImageCount { get; }
     public abstract int          PixelCount { get; }
