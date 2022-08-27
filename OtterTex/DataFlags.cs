@@ -3,21 +3,6 @@
 namespace OtterTex;
 
 [Flags]
-public enum DdsFlags : uint
-{
-    Caps        = 0x00000001,
-    Height      = 0x00000002,
-    Width       = 0x00000004,
-    Pitch       = 0x00000008,
-    PixelFormat = 0x00001000,
-    MipMapCount = 0x00020000,
-    LinearSize  = 0x00080000,
-    Depth       = 0x00800000,
-
-    Required = Caps | Height | Width | PixelFormat,
-}
-
-[Flags]
 public enum ColorPaletteFlags : ulong
 {
     None        = 0x00,

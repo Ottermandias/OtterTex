@@ -56,10 +56,10 @@ public abstract class ScratchImage
     public abstract ScratchImage Compress(DXGIFormat fmt, CompressFlags flags, float threshold);
     public abstract ScratchImage Decompress(DXGIFormat fmt);
     public abstract ScratchImage ComputeNormalMap(MapFlags flags, float amplitude, DXGIFormat fmt);
-    public abstract int          SaveToDDSMemory(IntPtr target, int maxLength, DdsFlags flags);
-    public abstract void         SaveToDDSFile(string path, DdsFlags flags);
+    public abstract int          SaveToDDSMemory(IntPtr target, int maxLength, DDSParseFlags flags = DDSParseFlags.None);
+    public abstract void         SaveToDDSFile(string path, DDSParseFlags flags = DDSParseFlags.None);
 
-    public unsafe int SaveToDDSMemory(Span<byte> data, DdsFlags flags)
+    public unsafe int SaveToDDSMemory(Span<byte> data, DDSParseFlags flags = DDSParseFlags.None)
     {
         fixed (byte* ptr = data)
         {
@@ -67,7 +67,7 @@ public abstract class ScratchImage
         }
     }
 
-    public unsafe byte[] Encode(DdsFlags flags)
+    public unsafe byte[] Encode(DDSParseFlags flags = DDSParseFlags.None)
     {
         var size = SaveToDDSMemory(IntPtr.Zero, 0, flags);
         var ret  = new byte[size];

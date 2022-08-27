@@ -202,7 +202,7 @@ namespace OtterTex
             return gcnew ScratchImageImpl(&ret);
         }
 
-        int SaveToDDSMemory(IntPtr target, int maxLength, DdsFlags flags) override
+        int SaveToDDSMemory(IntPtr target, int maxLength, DDSParseFlags flags) override
         {
             DirectX::Blob memory;
             auto hr = DirectX::SaveToDDSMemory(_base->GetImages(), _base->GetImageCount(), _base->GetMetadata(), static_cast<DirectX::DDS_FLAGS>(flags), memory);
@@ -210,7 +210,7 @@ namespace OtterTex
             return SaveBlob(memory, target, maxLength);
         }
 
-        void SaveToDDSFile(String^ path, DdsFlags flags) override
+        void SaveToDDSFile(String^ path, DDSParseFlags flags) override
         {
             pin_ptr<const wchar_t> pathPtr = PtrToStringChars(path);
             auto hr = DirectX::SaveToDDSFile(_base->GetImages(), _base->GetImageCount(), _base->GetMetadata(), static_cast<DirectX::DDS_FLAGS>(flags), pathPtr);

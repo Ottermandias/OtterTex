@@ -4,5 +4,7 @@ x86
 x64
 obj
 bin
+Debug
 *.vcxproj.user
 *.tlog
+OtterTexTest/Properties

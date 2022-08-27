@@ -109,7 +109,7 @@ namespace OtterTex
             return ToManaged(native);
         }
 
-        int WriteDDSHeader(TexMeta^ meta, IntPtr target, int size, DdsFlags flags) override
+        int WriteDDSHeader(TexMeta^ meta, IntPtr target, int size, DDSParseFlags flags) override
         {
             auto data = DirectX::TexMetadata();
             FromManaged(meta, data);

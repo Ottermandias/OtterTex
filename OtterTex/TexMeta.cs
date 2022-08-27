@@ -111,5 +111,5 @@ public abstract class TexMetaHelper
     public abstract TexMeta GetMetaDataFromWICMemory(IntPtr source, int size, WICParseFlags flags = WICParseFlags.None);
     public abstract TexMeta GetMetaDataFromWICFile(string path, WICParseFlags flags = WICParseFlags.None);
 
-    public abstract int WriteDDSHeader(TexMeta meta, IntPtr data, int size, DdsFlags flags);
+    public abstract int WriteDDSHeader(TexMeta meta, IntPtr data, int size, DDSParseFlags flags);
 }
