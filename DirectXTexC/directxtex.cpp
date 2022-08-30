@@ -216,12 +216,12 @@ API ERROR_CODE texmetadata_get_from_wic_file(const wchar_t* path, ENUM flags, vo
 
 API void scratchimage_ctor(void* scratch_image) noexcept
 {
-    *static_cast<DirectX::ScratchImage*>(scratch_image) = DirectX::ScratchImage();
+    new (static_cast<DirectX::ScratchImage*>(scratch_image)) DirectX::ScratchImage();
 }
 
 API void scratchimage_move_ctor(void* scratch_image, void* moved_from) noexcept
 {
-    *static_cast<DirectX::ScratchImage*>(scratch_image) = DirectX::ScratchImage(
+    new (static_cast<DirectX::ScratchImage*>(scratch_image)) DirectX::ScratchImage(
         std::move(*static_cast<DirectX::ScratchImage*>(moved_from)));
 }
 
