@@ -106,6 +106,16 @@ public partial class ScratchImage
     public ScratchImage ComputeNormalMap(DXGIFormat fmt, MapFlags flags = MapFlags.Default, float amplitude = 0.5f)
         => ComputeNormalMap(out var result, fmt, flags, amplitude).ThrowIfError(result);
 
+    public ErrorCode GetRGBA(out ScratchImage image)
+    {
+        if (Meta.Format == DXGIFormat.R8G8B8A8UNorm)
+            return FlipRotate(out image, FlipRotateFlags.Rotate0);
+        if (Meta.Format.IsCompressed())
+            return Decompress(out image, DXGIFormat.R8G8B8A8UNorm);
+
+        return Convert(out image, DXGIFormat.R8G8B8A8UNorm);
+    }
+
     // @formatter:off
     [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_flip_rotate(IntPtr images, ulong numImages, in TexMeta meta, FlipRotateFlags flags, ref ScratchImageData data);
     [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_resize(IntPtr images, ulong numImages, in TexMeta meta, ulong width, ulong height, FilterFlags flags, ref ScratchImageData data);

@@ -56,4 +56,10 @@ public readonly struct ErrorCode : IEquatable<ErrorCode>
 
     public static bool operator !(ErrorCode x)
         => x.Value < 0;
+
+    public override string ToString()
+        => GetException()?.Message ?? "No Error.";
+
+    public string StackTrace
+        => GetException()?.ToString() ?? string.Empty;
 }
