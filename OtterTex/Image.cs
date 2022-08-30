@@ -1,24 +1,44 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace OtterTex;
 
-public unsafe class Image
+[StructLayout(LayoutKind.Sequential)]
+public unsafe partial struct Image
 {
-    public int        Width;
-    public int        Height;
-    public DXGIFormat Format;
-    public int        RowPitch;
-    public int        SlicePitch;
-    public byte*      Pixels;
+    private ulong      _width;
+    private ulong      _height;
+    public  DXGIFormat Format;
+    private ulong      _rowPitch;
+    private ulong      _slicePitch;
+    private byte*      _pixels;
 
-    public Image(int width, int height, DXGIFormat fmt, int rowPitch, int slicePitch, IntPtr pixels)
+    public int Width
     {
-        Width      = width;
-        Height     = height;
-        Format     = fmt;
-        RowPitch   = rowPitch;
-        SlicePitch = slicePitch;
-        Pixels     = (byte*)pixels;
+        get => (int) _width;
+        set => _width = (ulong) value;
     }
-}
 
+    public int Height
+    {
+        get => (int)_height;
+        set => _height = (ulong)value;
+    }
+
+    public int RowPitch
+    {
+        get => (int)_rowPitch;
+        set => _rowPitch = (ulong)value;
+    }
+
+    public int SlicePitch
+    {
+        get => (int)_slicePitch;
+        set => _slicePitch = (ulong)value;
+    }
+
+    public ErrorCode Save(string path, DDSParseFlags flags = DDSParseFlags.None)
+        => image_save_to_dds_file(this, flags, path);
+
+    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode image_save_to_dds_file(in Image image, DDSParseFlags flags, string path);
+}

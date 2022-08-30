@@ -1,115 +1,158 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 
 namespace OtterTex;
 
-public interface ITexMeta
+[StructLayout(LayoutKind.Sequential)]
+public struct TexMeta
 {
-    public int                  Width      { get; }
-    public int                  Height     { get; }
-    public int                  Depth      { get; }
-    public int                  ArraySize  { get; }
-    public D3DResourceMiscFlags MiscFlags  { get; }
-    public D3DAlphaMode         MiscFlags2 { get; }
-    public DXGIFormat           Format     { get; }
-    public short                MipLevels  { get; }
-    public TexDimension         Dimension  { get; }
+    private ulong                _width;
+    private ulong                _height;
+    private ulong                _depth;
+    private ulong                _arraySize;
+    private ulong                _mipLevels;
+    public  D3DResourceMiscFlags MiscFlags;
+    public  uint                 MiscFlags2;
+    public  DXGIFormat           Format;
+    public  TexDimension         Dimension;
 
-    public bool IsCubeMap            { get; }
-    public bool IsPremultipliedAlpha { get; }
-    public bool IsVolumeMap          { get; }
-}
-
-public sealed class TexMeta : ITexMeta
-{
-    public int                  Width      { get; set; }
-    public int                  Height     { get; set; }
-    public int                  Depth      { get; set; }
-    public int                  ArraySize  { get; set; }
-    public D3DResourceMiscFlags MiscFlags  { get; set; }
-    public D3DAlphaMode         MiscFlags2 { get; set; }
-    public DXGIFormat           Format     { get; set; }
-    public short                MipLevels  { get; set; }
-    public TexDimension         Dimension  { get; set; }
-
-    public TexMeta(int width, int height, int depth, int arraySize, D3DResourceMiscFlags flags, D3DAlphaMode flags2, DXGIFormat format,
-        short mipLevels, TexDimension dimension)
+    public int Width
     {
-        Width      = width;
-        Height     = height;
-        Depth      = depth;
-        ArraySize  = arraySize;
-        MiscFlags  = flags;
-        MiscFlags2 = flags2;
-        Format     = format;
-        MipLevels  = mipLevels;
-        Dimension  = dimension;
+        get => (int)_width;
+        set => _width = (ulong)value;
+    }
+
+    public int Height
+    {
+        get => (int)_height;
+        set => _height = (ulong)value;
+    }
+
+    public int Depth
+    {
+        get => (int)_depth;
+        set => _depth = (ulong)value;
+    }
+
+    public int ArraySize
+    {
+        get => (int)_arraySize;
+        set => _arraySize = (ulong)value;
+    }
+
+    public int MipLevels
+    {
+        get => (int)_mipLevels;
+        set => _mipLevels = (ulong)value;
+    }
+
+    public unsafe IntPtr Pointer
+    {
+        get
+        {
+            fixed (void* ptr = &this)
+            {
+                return (IntPtr)ptr;
+            }
+        }
     }
 
     public bool IsCubeMap
         => MiscFlags.HasFlag(D3DResourceMiscFlags.TextureCube);
 
     public bool IsPremultipliedAlpha
-        => (MiscFlags2 & D3DAlphaMode.AlphaModeMask) == D3DAlphaMode.Premultiplied;
+        => ((D3DAlphaMode)MiscFlags2 & D3DAlphaMode.AlphaModeMask) == D3DAlphaMode.Premultiplied;
 
-    public void SetAlphaMode(D3DAlphaMode mode)
-        => MiscFlags2 = (MiscFlags2 & ~D3DAlphaMode.AlphaModeMask) | mode;
+    public D3DAlphaMode AlphaMode
+    {
+        get => (D3DAlphaMode)MiscFlags2 & D3DAlphaMode.AlphaModeMask;
+        set => MiscFlags2 = (MiscFlags2 & (uint)~D3DAlphaMode.AlphaModeMask) | (uint)value;
+    }
 
     public bool IsVolumeMap
         => Dimension == TexDimension.Tex3D;
 
-    public static TexMeta FromDDSData(IntPtr source, int length, DDSParseFlags flags)
-        => TexMetaHelper.Instance.GetMetaDataFromDDSMemory(source, length, flags);
+    public int ComputeIndex(int mip, int item, int slice)
+        => (int)texmetadata_compute_index(this, (ulong)mip, (ulong)item, (ulong)slice);
 
-    public static unsafe TexMeta FromDDSData(ReadOnlySpan<byte> source, DDSParseFlags flags)
+    public static unsafe ErrorCode FromDDS(ReadOnlySpan<byte> data, out TexMeta meta, DDSParseFlags flags = DDSParseFlags.None)
     {
-        fixed (byte* ptr = source)
+        fixed (void* ptr = data)
         {
-            return FromDDSData((IntPtr)ptr, source.Length, flags);
+            return texmetadata_get_from_dds_memory((IntPtr)ptr, (ulong)data.Length, flags, out meta);
         }
     }
 
-    public static bool FromDDSData(IntPtr source, int length, DDSParseFlags flags, [NotNullWhen(true)] out TexMeta? meta)
+    public static TexMeta FromDDS(ReadOnlySpan<byte> data, DDSParseFlags flags = DDSParseFlags.None)
+        => FromDDS(data, out var meta, flags).ThrowIfError(meta);
+
+    public static ErrorCode FromDDS(string path, out TexMeta meta, DDSParseFlags flags = DDSParseFlags.None)
+        => texmetadata_get_from_dds_file(path, flags, out meta);
+
+    public static TexMeta FromDDS(string path, DDSParseFlags flags = DDSParseFlags.None)
+        => FromDDS(path, out var meta, flags).ThrowIfError(meta);
+
+    public static unsafe ErrorCode FromHDR(ReadOnlySpan<byte> data, out TexMeta meta)
     {
-        try
+        fixed (void* ptr = data)
         {
-            meta = TexMetaHelper.Instance.GetMetaDataFromDDSMemory(source, length, flags);
-            return true;
-        }
-        catch
-        {
-            meta = null;
-            return false;
+            return texmetadata_get_from_hdr_memory((IntPtr)ptr, (ulong)data.Length, out meta);
         }
     }
 
-    public static unsafe bool FromDDSData(ReadOnlySpan<byte> source, DDSParseFlags flags, [NotNullWhen(true)] out TexMeta? meta)
+    public static TexMeta FromHDR(ReadOnlySpan<byte> data)
+        => FromHDR(data, out var meta).ThrowIfError(meta);
+
+    public static ErrorCode FromHDR(string path, out TexMeta meta)
+        => texmetadata_get_from_hdr_file(path, out meta);
+
+    public static TexMeta FromHDR(string path)
+        => FromHDR(path, out var meta).ThrowIfError(meta);
+
+    public static unsafe ErrorCode FromTGA(ReadOnlySpan<byte> data, out TexMeta meta, TGAParseFlags flags = TGAParseFlags.None)
     {
-        fixed (byte* ptr = source)
+        fixed (void* ptr = data)
         {
-            return FromDDSData((IntPtr)ptr, source.Length, flags, out meta);
+            return texmetadata_get_from_tga_memory((IntPtr)ptr, (ulong)data.Length, flags, out meta);
         }
     }
-}
 
-public abstract class TexMetaHelper
-{
-    internal static readonly TexMetaHelper Instance;
+    public static TexMeta FromTGA(ReadOnlySpan<byte> data, TGAParseFlags flags = TGAParseFlags.None)
+        => FromTGA(data, out var meta, flags).ThrowIfError(meta);
 
-    static TexMetaHelper()
-        => Instance = Utility.LoadStatic<TexMetaHelper>("OtterTex.TexMetaHelperImpl");
+    public static ErrorCode FromTGA(string path, out TexMeta meta, TGAParseFlags flags = TGAParseFlags.None)
+        => texmetadata_get_from_tga_file(path, flags, out meta);
 
-    public abstract TexMeta GetMetaDataFromDDSMemory(IntPtr source, int size, DDSParseFlags flags = DDSParseFlags.None);
-    public abstract TexMeta GetMetaDataFromDDSFile(string path, DDSParseFlags flags = DDSParseFlags.None);
+    public static TexMeta FromTGA(string path, TGAParseFlags flags = TGAParseFlags.None)
+        => FromTGA(path, out var meta, flags).ThrowIfError(meta);
 
-    public abstract TexMeta GetMetaDataFromHDRMemory(IntPtr source, int size);
-    public abstract TexMeta GetMetaDataFromHDRFile(string path);
+    public static unsafe ErrorCode FromWIC(ReadOnlySpan<byte> data, out TexMeta meta, WICParseFlags flags = WICParseFlags.None)
+    {
+        fixed (void* ptr = data)
+        {
+            return texmetadata_get_from_wic_memory((IntPtr)ptr, (ulong)data.Length, flags, out meta);
+        }
+    }
 
-    public abstract TexMeta GetMetaDataFromTGAMemory(IntPtr source, int size, TGAParseFlags flags = TGAParseFlags.None);
-    public abstract TexMeta GetMetaDataFromTGAFile(string path, TGAParseFlags flags = TGAParseFlags.None);
+    public static TexMeta FromWIC(ReadOnlySpan<byte> data, WICParseFlags flags = WICParseFlags.None)
+        => FromWIC(data, out var meta, flags).ThrowIfError(meta);
 
-    public abstract TexMeta GetMetaDataFromWICMemory(IntPtr source, int size, WICParseFlags flags = WICParseFlags.None);
-    public abstract TexMeta GetMetaDataFromWICFile(string path, WICParseFlags flags = WICParseFlags.None);
+    public static ErrorCode FromWIC(string path, out TexMeta meta, WICParseFlags flags = WICParseFlags.None)
+        => texmetadata_get_from_wic_file(path, flags, out meta);
 
-    public abstract int WriteDDSHeader(TexMeta meta, IntPtr data, int size, DDSParseFlags flags);
+    public static TexMeta FromWIC(string path, WICParseFlags flags = WICParseFlags.None)
+        => FromWIC(path, out var meta, flags).ThrowIfError(meta);
+
+    // @formatter:off
+    [DllImport("DirectXTexC.dll")] private static extern ulong texmetadata_compute_index(in TexMeta tex, ulong mip, ulong item, ulong slice);
+    [DllImport("DirectXTexC.dll")] private static extern ErrorCode texmetadata_get_from_dds_memory(IntPtr data, ulong size, DDSParseFlags flags, out TexMeta tex);
+    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_dds_file(string path, DDSParseFlags flags, out TexMeta tex);
+    [DllImport("DirectXTexC.dll")] private static extern ErrorCode texmetadata_get_from_hdr_memory(IntPtr data, ulong size, out TexMeta tex);
+    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_hdr_file(string path, out TexMeta tex);
+    [DllImport("DirectXTexC.dll")] private static extern ErrorCode texmetadata_get_from_tga_memory(IntPtr data, ulong size, TGAParseFlags flags, out TexMeta tex);
+    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_tga_file(string path, TGAParseFlags flags, out TexMeta tex);
+    [DllImport("DirectXTexC.dll")] private static extern ErrorCode texmetadata_get_from_wic_memory(IntPtr data, ulong size, WICParseFlags flags, out TexMeta tex);
+    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_wic_file(string path, WICParseFlags flags, out TexMeta tex);
+    // @formatter:on
 }

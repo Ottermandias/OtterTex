@@ -1,5 +1,4 @@
-﻿using OtterTex;
-using System.Runtime.Intrinsics.X86;
+﻿using System.Runtime.InteropServices;
 
 namespace OtterTex;
 
@@ -132,53 +131,70 @@ public enum DXGIFormat : uint
 public static class DXGIExtensions
 {
     // @formatter:off
-    public static bool       IsValid(this DXGIFormat fmt) => DXGIHelper.Instance.IsValid(fmt);
-    public static bool       IsCompressed(this DXGIFormat fmt) => DXGIHelper.Instance.IsCompressed(fmt);
-    public static bool       IsPacked(this DXGIFormat fmt) => DXGIHelper.Instance.IsPacked(fmt);
-    public static bool       IsVideo(this DXGIFormat fmt) => DXGIHelper.Instance.IsVideo(fmt);
-    public static bool       IsPlanar(this DXGIFormat fmt) => DXGIHelper.Instance.IsPlanar(fmt);
-    public static bool       IsPalettized(this DXGIFormat fmt) => DXGIHelper.Instance.IsPalettized(fmt);
-    public static bool       IsDepthStencil(this DXGIFormat fmt) => DXGIHelper.Instance.IsDepthStencil(fmt);
-    public static bool       IsSRGB(this DXGIFormat fmt) => DXGIHelper.Instance.IsSRGB(fmt);
-    public static bool       IsBGR(this DXGIFormat fmt) => DXGIHelper.Instance.IsBGR(fmt);
-    public static bool       IsTypeless(this DXGIFormat fmt) => DXGIHelper.Instance.IsTypeless(fmt);
-    public static bool       HasAlpha(this DXGIFormat fmt) => DXGIHelper.Instance.HasAlpha(fmt);
-    public static int        BitsPerPixel(this DXGIFormat fmt) => DXGIHelper.Instance.BitsPerPixel(fmt);
-    public static int        BitsPerColor(this DXGIFormat fmt) => DXGIHelper.Instance.BitsPerColor(fmt);
-    public static DXGIFormat ToSRGB(this DXGIFormat fmt) => DXGIHelper.Instance.MakeSRGB(fmt);
-    public static DXGIFormat ToLinear(this DXGIFormat fmt) => DXGIHelper.Instance.MakeLinear(fmt);
-    public static DXGIFormat ToTypeless(this DXGIFormat fmt) => DXGIHelper.Instance.MakeTypeless(fmt);
-    public static DXGIFormat ToTypelessUNorm(this DXGIFormat fmt) => DXGIHelper.Instance.MakeTypelessUNorm(fmt);
-    public static DXGIFormat ToTypelessFloat(this DXGIFormat fmt) => DXGIHelper.Instance.MakeTypelessFloat(fmt);
-    public static FormatType FormatType(this DXGIFormat fmt) => DXGIHelper.Instance.FormatDataType(fmt);
+    public static bool       IsValid(this DXGIFormat fmt) => dxgiformat_is_valid(fmt);
+    public static bool       IsCompressed(this DXGIFormat fmt) => dxgiformat_is_compressed(fmt);
+    public static bool       IsPacked(this DXGIFormat fmt) => dxgiformat_is_packed(fmt);
+    public static bool       IsVideo(this DXGIFormat fmt) => dxgiformat_is_video(fmt);
+    public static bool       IsPlanar(this DXGIFormat fmt) => dxgiformat_is_planar(fmt);
+    public static bool       IsPalettized(this DXGIFormat fmt) => dxgiformat_is_palettized( fmt);
+    public static bool       IsDepthStencil(this DXGIFormat fmt) => dxgiformat_is_depth_stencil(fmt);
+    public static bool       IsSRGB(this DXGIFormat fmt) => dxgiformat_is_srgb(fmt);
+    public static bool       IsBGR(this DXGIFormat fmt) => dxgiformat_is_bgr(fmt);
+    public static bool       IsTypelessPartial(this DXGIFormat fmt) => dxgiformat_is_typeless_partial(fmt);
+    public static bool       IsTypelessFull(this DXGIFormat fmt) => dxgiformat_is_typeless_full(fmt);
+    public static bool       HasAlpha(this DXGIFormat fmt) => dxgiformat_has_alpha(fmt);
+    public static int        BitsPerPixel(this DXGIFormat fmt) => (int) dxgiformat_bits_per_pixel(fmt);
+    public static int        BitsPerColor(this DXGIFormat fmt) => (int) dxgiformat_bits_per_color(fmt);
+    public static DXGIFormat ToSRGB(this DXGIFormat fmt) => dxgiformat_make_srgb(fmt);
+    public static DXGIFormat ToLinear(this DXGIFormat fmt) => dxgiformat_make_linear(fmt);
+    public static DXGIFormat ToTypeless(this DXGIFormat fmt) => dxgiformat_make_typeless(fmt);
+    public static DXGIFormat ToTypelessUNorm(this DXGIFormat fmt) => dxgiformat_make_typeless_unorm(fmt);
+    public static DXGIFormat ToTypelessFloat(this DXGIFormat fmt) => dxgiformat_make_typeless_float(fmt);
+    public static FormatType FormatType(this DXGIFormat fmt) => dxgiformat_data_type(fmt);
+
     // @formatter:on
-}
 
-public abstract class DXGIHelper
-{
-    internal static readonly DXGIHelper Instance;
+    public static ErrorCode ComputePitch(this DXGIFormat fmt, int width, int height, out int rowPitch, out int slicePitch,
+        ColorPaletteFlags flags = ColorPaletteFlags.None)
+    {
+        ulong rowPitchU   = 0;
+        ulong slicePitchU = 0;
+        var   hr          = dxgiformat_compute_pitch(fmt, (ulong)width, (ulong)height, ref rowPitchU, ref slicePitchU, flags);
+        rowPitch   = (int)rowPitchU;
+        slicePitch = (int)slicePitchU;
+        return hr;
+    }
 
-    static DXGIHelper()
-        => Instance = Utility.LoadStatic<DXGIHelper>("OtterTex.DXGIHelperImpl");
+    public static (int RowPitch, int SlicePitch) ComputePitch(this DXGIFormat fmt, int width, int height,
+        ColorPaletteFlags flags = ColorPaletteFlags.None)
+        => ComputePitch(fmt, width, height, out var row, out var slice).ThrowIfError((row, slice));
 
-    public abstract bool       IsValid(DXGIFormat fmt);
-    public abstract bool       IsCompressed(DXGIFormat fmt);
-    public abstract bool       IsPacked(DXGIFormat fmt);
-    public abstract bool       IsVideo(DXGIFormat fmt);
-    public abstract bool       IsPlanar(DXGIFormat fmt);
-    public abstract bool       IsPalettized(DXGIFormat fmt);
-    public abstract bool       IsDepthStencil(DXGIFormat fmt);
-    public abstract bool       IsSRGB(DXGIFormat fmt);
-    public abstract bool       IsBGR(DXGIFormat fmt);
-    public abstract bool       IsTypeless(DXGIFormat fmt);
-    public abstract bool       HasAlpha(DXGIFormat fmt);
-    public abstract int        BitsPerPixel(DXGIFormat fmt);
-    public abstract int        BitsPerColor(DXGIFormat fmt);
-    public abstract DXGIFormat MakeSRGB(DXGIFormat fmt);
-    public abstract DXGIFormat MakeLinear(DXGIFormat fmt);
-    public abstract DXGIFormat MakeTypeless(DXGIFormat fmt);
-    public abstract DXGIFormat MakeTypelessUNorm(DXGIFormat fmt);
-    public abstract DXGIFormat MakeTypelessFloat(DXGIFormat fmt);
+    public static int ComputeScanLines(this DXGIFormat fmt, int height)
+        => (int)dxgiformat_compute_scanlines(fmt, (ulong)height);
 
-    public abstract FormatType FormatDataType(DXGIFormat fmt);
+
+    // @formatter:off
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_valid(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_compressed(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_packed(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_video(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_planar(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_palettized(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_depth_stencil(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_srgb(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_bgr(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_typeless_partial(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_typeless_full(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_has_alpha(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern ulong dxgiformat_bits_per_pixel(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern ulong dxgiformat_bits_per_color(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_srgb(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_linear(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_typeless(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_typeless_unorm(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_typeless_float(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern FormatType dxgiformat_data_type(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern ErrorCode dxgiformat_compute_pitch(DXGIFormat fmt, ulong width, ulong height, ref ulong rowPitch, ref ulong slicePitch, ColorPaletteFlags flags);
+    [DllImport("DirectXTexC.dll")] private static extern ulong dxgiformat_compute_scanlines(DXGIFormat fmt, ulong height);
+    // @formatter:on
 }

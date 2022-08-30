@@ -30,7 +30,7 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB3277</MSBuildWarningsAsMessages>
-    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\DirectXTexC\DirectXTexC.vcxproj" />
+    </ItemGroup>
 </Project>

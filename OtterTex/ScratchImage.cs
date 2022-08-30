@@ -1,81 +1,79 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace OtterTex;
 
-public abstract class ScratchImage
+public partial class ScratchImage : IDisposable
 {
-    public static ScratchImage Create()
-        => ScratchImageFactory.Instance.Create();
-
-    public static ScratchImage LoadFromDDSMemory(IntPtr source, int size, DDSParseFlags flags = DDSParseFlags.None)
-        => ScratchImageFactory.Instance.LoadFromDDSMemory(source, size, flags);
-
-    public static ScratchImage LoadFromDDSFile(string path, DDSParseFlags flags = DDSParseFlags.None)
-        => ScratchImageFactory.Instance.LoadFromDDSFile(path, flags);
-
-    public static ScratchImage LoadFromHDRMemory(IntPtr source, int size)
-        => ScratchImageFactory.Instance.LoadFromHDRMemory(source, size);
-
-    public static ScratchImage LoadFromHDRFile(string path)
-        => ScratchImageFactory.Instance.LoadFromHDRFile(path);
-
-    public static ScratchImage LoadFromTGAMemory(IntPtr source, int size, TGAParseFlags flags = TGAParseFlags.None)
-        => ScratchImageFactory.Instance.LoadFromTGAMemory(source, size, flags);
-
-    public static ScratchImage LoadFromTGAFile(string path, TGAParseFlags flags = TGAParseFlags.None)
-        => ScratchImageFactory.Instance.LoadFromTGAFile(path, flags);
-
-    public static ScratchImage LoadFromWICMemory(IntPtr source, int size, WICParseFlags flags = WICParseFlags.None)
-        => ScratchImageFactory.Instance.LoadFromWICMemory(source, size, flags);
-
-    public static ScratchImage LoadFromWICFile(string path, WICParseFlags flags = WICParseFlags.None)
-        => ScratchImageFactory.Instance.LoadFromWICFile(path, flags);
-
-
-    public abstract ITexMeta     Meta       { get; }
-    public abstract int          ImageCount { get; }
-    public abstract int          PixelCount { get; }
-    public abstract bool         IsOpaque   { get; }
-    public abstract void         Initialize(TexMeta meta, ColorPaletteFlags flags);
-    public abstract void         Initialize1D(DXGIFormat fmt, int length, int arraySize, int mipLevels, ColorPaletteFlags flags);
-    public abstract void         Initialize2D(DXGIFormat fmt, int width, int height, int arraySize, int mipLevels, ColorPaletteFlags flags);
-    public abstract void         Initialize3D(DXGIFormat fmt, int width, int height, int depth, int mipLevels, ColorPaletteFlags flags);
-    public abstract void         InitializeCube(DXGIFormat fmt, int width, int height, int nCubes, int mipLevels, ColorPaletteFlags flags);
-    public abstract void         Release();
-    public abstract bool         OverrideFormat(DXGIFormat fmt);
-    public abstract Image        GetImage(int mip, int item, int slice);
-    public abstract Image[]      GetImages();
-    public abstract ScratchImage FlipRotate(FlipRotateFlags flags);
-    public abstract ScratchImage Resize(int width, int height, FilterFlags flags);
-    public abstract ScratchImage Convert(DXGIFormat format, FilterFlags flags, float threshold);
-    public abstract ScratchImage ConvertToSinglePlane();
-    public abstract ScratchImage GenerateMipMaps(int levels, FilterFlags flags);
-    public abstract ScratchImage GenerateMipMaps3D(int levels, FilterFlags flags);
-    public abstract ScratchImage ScaleMipMapsAlphaForCoverage(int item, float alphaReference);
-    public abstract ScratchImage PremultiplyAlpha(AlphaFlags flags);
-    public abstract ScratchImage Compress(DXGIFormat fmt, CompressFlags flags, float threshold);
-    public abstract ScratchImage Decompress(DXGIFormat fmt);
-    public abstract ScratchImage ComputeNormalMap(MapFlags flags, float amplitude, DXGIFormat fmt);
-    public abstract int          SaveToDDSMemory(IntPtr target, int maxLength, DDSParseFlags flags = DDSParseFlags.None);
-    public abstract void         SaveToDDSFile(string path, DDSParseFlags flags = DDSParseFlags.None);
-
-    public unsafe int SaveToDDSMemory(Span<byte> data, DDSParseFlags flags = DDSParseFlags.None)
+    public ScratchImage()
     {
-        fixed (byte* ptr = data)
-        {
-            return SaveToDDSMemory((IntPtr)ptr, data.Length, flags);
-        }
+        scratchimage_ctor(ref _data);
     }
 
-    public unsafe byte[] Encode(DDSParseFlags flags = DDSParseFlags.None)
+    public void Dispose()
     {
-        var size = SaveToDDSMemory(IntPtr.Zero, 0, flags);
-        var ret  = new byte[size];
-        fixed (byte* ptr = ret)
-        {
-            return SaveToDDSMemory((IntPtr)ptr, ret.Length, flags) <= ret.Length
-                ? ret
-                : Array.Empty<byte>();
-        }
+        scratchimage_release(ref _data);
     }
+
+    ~ScratchImage()
+    {
+        Dispose();
+    }
+
+    public bool OverrideFormat(DXGIFormat fmt)
+        => scratchimage_override_format(ref _data, fmt);
+
+    public unsafe bool GetImage(int mip, int item, int slice, out Image image)
+    {
+        var ret = scratchimage_get_image(ref _data, (ulong)mip, (ulong)item, (ulong)slice);
+        if (ret == IntPtr.Zero)
+        {
+            image = default;
+            return false;
+        }
+
+        image = *(Image*)ret;
+        return true;
+    }
+
+    public Image GetImage(int mip, int item, int slice)
+    {
+        if (GetImage(mip, item, slice, out var image))
+            return image;
+
+        throw new ArgumentOutOfRangeException("Invalid image access.");
+    }
+
+    public unsafe ReadOnlySpan<Image> Images
+        => new(_data.Image, (int)_data.NumImages);
+
+    public unsafe ReadOnlySpan<byte> Pixels
+        => new(_data.Data, (int)_data.Size);
+
+    public ref readonly TexMeta Meta
+        => ref _data.Meta;
+
+    public bool IsAlphaAllOpaque
+        => scratchimage_is_alpha_all_opaque(ref _data);
+
+    private ScratchImageData _data;
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    private unsafe struct ScratchImageData
+    {
+        public ulong   NumImages;
+        public ulong   Size;
+        public TexMeta Meta;
+        public Image*  Image;
+        public byte*   Data;
+    }
+
+    // @formatter:off
+    [DllImport("DirectXTexC.dll")] private static extern void scratchimage_ctor(ref ScratchImageData data);
+    [DllImport("DirectXTexC.dll")] private static extern void scratchimage_release(ref ScratchImageData data);
+    [DllImport("DirectXTexC.dll")] private static extern bool scratchimage_override_format(ref ScratchImageData data, DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")] private static extern IntPtr scratchimage_get_image(ref ScratchImageData data, ulong mip, ulong item, ulong slice);
+    [DllImport("DirectXTexC.dll")] private static extern bool scratchimage_is_alpha_all_opaque(ref ScratchImageData data);
+    // @formatter:on
 }

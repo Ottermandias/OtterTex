@@ -29,7 +29,7 @@ public enum FormatType
     SInt,
 }
 
-public enum TexDimension : byte
+public enum TexDimension : uint
 {
     Unknown = 0,
     Buffer  = 1,

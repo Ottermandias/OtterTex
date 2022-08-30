@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -7,11 +7,13 @@
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\OtterTex\OtterTex.csproj" />
-        <ProjectReference Include="..\OtterTexCLI\OtterTexCLI.vcxproj" />
+                          
+        <ProjectReference Include="..\OtterTex\OtterTex.csproj">
+        </ProjectReference>
     </ItemGroup>
 
 </Project>

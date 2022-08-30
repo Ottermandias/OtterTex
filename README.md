@@ -1,2 +1,2 @@
 # OtterTex
-Experimenting around with C++/CLI wrapping DirectXTex
+Experimenting around with a C-Wrapper around DirectXTex and a C# Consumer of this wrapper.
