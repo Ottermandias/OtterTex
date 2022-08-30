@@ -36,6 +36,9 @@ public readonly struct ErrorCode : IEquatable<ErrorCode>
         return value;
     }
 
+    public Exception? GetException()
+        => Marshal.GetExceptionForHR(Value);
+
     public bool Equals(ErrorCode other)
         => Value == other.Value;
 

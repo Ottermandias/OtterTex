@@ -15,8 +15,8 @@ public unsafe partial struct Image
 
     public int Width
     {
-        get => (int) _width;
-        set => _width = (ulong) value;
+        get => (int)_width;
+        set => _width = (ulong)value;
     }
 
     public int Height
@@ -40,5 +40,6 @@ public unsafe partial struct Image
     public ErrorCode Save(string path, DDSParseFlags flags = DDSParseFlags.None)
         => image_save_to_dds_file(this, flags, path);
 
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode image_save_to_dds_file(in Image image, DDSParseFlags flags, string path);
+    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)]
+    private static extern ErrorCode image_save_to_dds_file(in Image image, DDSParseFlags flags, string path);
 }
