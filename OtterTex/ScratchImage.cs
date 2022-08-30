@@ -72,8 +72,8 @@ public partial class ScratchImage : IDisposable
     // @formatter:off
     [DllImport("DirectXTexC.dll")] private static extern void scratchimage_ctor(ref ScratchImageData data);
     [DllImport("DirectXTexC.dll")] private static extern void scratchimage_release(ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern bool scratchimage_override_format(ref ScratchImageData data, DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool scratchimage_override_format(ref ScratchImageData data, DXGIFormat fmt);
     [DllImport("DirectXTexC.dll")] private static extern IntPtr scratchimage_get_image(ref ScratchImageData data, ulong mip, ulong item, ulong slice);
-    [DllImport("DirectXTexC.dll")] private static extern bool scratchimage_is_alpha_all_opaque(ref ScratchImageData data);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool scratchimage_is_alpha_all_opaque(ref ScratchImageData data);
     // @formatter:on
 }

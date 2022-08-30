@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace OtterTex;
 
@@ -174,18 +175,18 @@ public static class DXGIExtensions
 
 
     // @formatter:off
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_valid(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_compressed(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_packed(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_video(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_planar(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_palettized(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_depth_stencil(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_srgb(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_bgr(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_typeless_partial(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_is_typeless_full(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern bool dxgiformat_has_alpha(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_valid(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_compressed(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_packed(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_video(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_planar(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_palettized(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_depth_stencil(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_srgb(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_bgr(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_typeless_partial(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_typeless_full(DXGIFormat fmt);
+    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_has_alpha(DXGIFormat fmt);
     [DllImport("DirectXTexC.dll")] private static extern ulong dxgiformat_bits_per_pixel(DXGIFormat fmt);
     [DllImport("DirectXTexC.dll")] private static extern ulong dxgiformat_bits_per_color(DXGIFormat fmt);
     [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_srgb(DXGIFormat fmt);

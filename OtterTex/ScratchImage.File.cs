@@ -100,7 +100,6 @@ public partial class ScratchImage
     public unsafe ErrorCode SaveDDS(string path, DDSParseFlags flags = DDSParseFlags.None)
         => scratchimage_save_to_dds_file((IntPtr)_data.Image, _data.NumImages, in _data.Meta, flags, path);
 
-
     // @formatter:off
     [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_load_from_dds_memory(IntPtr source, ulong size, DDSParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
     [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_load_from_tga_memory(IntPtr source, ulong size, TGAParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
