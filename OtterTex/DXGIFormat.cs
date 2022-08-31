@@ -131,6 +131,9 @@ public enum DXGIFormat : uint
 
 public static class DXGIExtensions
 {
+    static DXGIExtensions()
+        => NativeDll.Initialize();
+
     // @formatter:off
     public static bool       IsValid(this DXGIFormat fmt) => dxgiformat_is_valid(fmt);
     public static bool       IsCompressed(this DXGIFormat fmt) => dxgiformat_is_compressed(fmt);
@@ -175,27 +178,27 @@ public static class DXGIExtensions
 
 
     // @formatter:off
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_valid(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_compressed(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_packed(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_video(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_planar(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_palettized(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_depth_stencil(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_srgb(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_bgr(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_typeless_partial(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_typeless_full(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_has_alpha(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern ulong dxgiformat_bits_per_pixel(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern ulong dxgiformat_bits_per_color(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_srgb(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_linear(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_typeless(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_typeless_unorm(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern DXGIFormat dxgiformat_make_typeless_float(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern FormatType dxgiformat_data_type(DXGIFormat fmt);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode dxgiformat_compute_pitch(DXGIFormat fmt, ulong width, ulong height, ref ulong rowPitch, ref ulong slicePitch, ColorPaletteFlags flags);
-    [DllImport("DirectXTexC.dll")] private static extern ulong dxgiformat_compute_scanlines(DXGIFormat fmt, ulong height);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_valid(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_compressed(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_packed(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_video(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_planar(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_palettized(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_depth_stencil(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_srgb(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_bgr(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_typeless_partial(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_typeless_full(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_has_alpha(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)] private static extern ulong dxgiformat_bits_per_pixel(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)] private static extern ulong dxgiformat_bits_per_color(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)] private static extern DXGIFormat dxgiformat_make_srgb(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)] private static extern DXGIFormat dxgiformat_make_linear(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)] private static extern DXGIFormat dxgiformat_make_typeless(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)] private static extern DXGIFormat dxgiformat_make_typeless_unorm(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)] private static extern DXGIFormat dxgiformat_make_typeless_float(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)] private static extern FormatType dxgiformat_data_type(DXGIFormat fmt);
+    [DllImport(NativeDll.Name)] private static extern ErrorCode dxgiformat_compute_pitch(DXGIFormat fmt, ulong width, ulong height, ref ulong rowPitch, ref ulong slicePitch, ColorPaletteFlags flags);
+    [DllImport(NativeDll.Name)] private static extern ulong dxgiformat_compute_scanlines(DXGIFormat fmt, ulong height);
     // @formatter:on
 }

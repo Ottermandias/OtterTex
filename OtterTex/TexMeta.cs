@@ -144,15 +144,18 @@ public struct TexMeta
     public static TexMeta FromWIC(string path, WICParseFlags flags = WICParseFlags.None)
         => FromWIC(path, out var meta, flags).ThrowIfError(meta);
 
+    static TexMeta()
+        => NativeDll.Initialize();
+
     // @formatter:off
-    [DllImport("DirectXTexC.dll")] private static extern ulong texmetadata_compute_index(in TexMeta tex, ulong mip, ulong item, ulong slice);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode texmetadata_get_from_dds_memory(IntPtr data, ulong size, DDSParseFlags flags, out TexMeta tex);
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_dds_file(string path, DDSParseFlags flags, out TexMeta tex);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode texmetadata_get_from_hdr_memory(IntPtr data, ulong size, out TexMeta tex);
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_hdr_file(string path, out TexMeta tex);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode texmetadata_get_from_tga_memory(IntPtr data, ulong size, TGAParseFlags flags, out TexMeta tex);
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_tga_file(string path, TGAParseFlags flags, out TexMeta tex);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode texmetadata_get_from_wic_memory(IntPtr data, ulong size, WICParseFlags flags, out TexMeta tex);
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_wic_file(string path, WICParseFlags flags, out TexMeta tex);
+    [DllImport(NativeDll.Name)] private static extern ulong texmetadata_compute_index(in TexMeta tex, ulong mip, ulong item, ulong slice);
+    [DllImport(NativeDll.Name)] private static extern ErrorCode texmetadata_get_from_dds_memory(IntPtr data, ulong size, DDSParseFlags flags, out TexMeta tex);
+    [DllImport(NativeDll.Name, CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_dds_file(string path, DDSParseFlags flags, out TexMeta tex);
+    [DllImport(NativeDll.Name)] private static extern ErrorCode texmetadata_get_from_hdr_memory(IntPtr data, ulong size, out TexMeta tex);
+    [DllImport(NativeDll.Name, CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_hdr_file(string path, out TexMeta tex);
+    [DllImport(NativeDll.Name)] private static extern ErrorCode texmetadata_get_from_tga_memory(IntPtr data, ulong size, TGAParseFlags flags, out TexMeta tex);
+    [DllImport(NativeDll.Name, CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_tga_file(string path, TGAParseFlags flags, out TexMeta tex);
+    [DllImport(NativeDll.Name)] private static extern ErrorCode texmetadata_get_from_wic_memory(IntPtr data, ulong size, WICParseFlags flags, out TexMeta tex);
+    [DllImport(NativeDll.Name, CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_wic_file(string path, WICParseFlags flags, out TexMeta tex);
     // @formatter:on
 }

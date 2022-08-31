@@ -6,6 +6,9 @@ namespace OtterTex;
 [StructLayout(LayoutKind.Sequential)]
 public unsafe partial struct Image
 {
+    static Image()
+        => NativeDll.Initialize();
+
     private ulong      _width;
     private ulong      _height;
     public  DXGIFormat Format;
@@ -40,6 +43,6 @@ public unsafe partial struct Image
     public ErrorCode Save(string path, DDSParseFlags flags = DDSParseFlags.None)
         => image_save_to_dds_file(this, flags, path);
 
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)]
+    [DllImport(NativeDll.Name, CharSet = CharSet.Unicode)]
     private static extern ErrorCode image_save_to_dds_file(in Image image, DDSParseFlags flags, string path);
 }

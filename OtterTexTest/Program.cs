@@ -166,6 +166,7 @@ public class Program
     {
         try
         {
+            OtterTex.NativeDll.Initialize();
             TestDXGIFormat(DXGIFormat.BC7UNorm);
             TestTexMeta();
             TestImage();
