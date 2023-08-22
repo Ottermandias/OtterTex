@@ -17,28 +17,22 @@ public unsafe partial struct Image
     private byte*      _pixels;
 
     public int Width
-    {
-        get => (int)_width;
-        set => _width = (ulong)value;
-    }
+        => (int)_width;
 
     public int Height
-    {
-        get => (int)_height;
-        set => _height = (ulong)value;
-    }
+        => (int)_height;
 
     public int RowPitch
-    {
-        get => (int)_rowPitch;
-        set => _rowPitch = (ulong)value;
-    }
+        => (int)_rowPitch;
 
     public int SlicePitch
-    {
-        get => (int)_slicePitch;
-        set => _slicePitch = (ulong)value;
-    }
+        => (int)_slicePitch;
+
+    public IntPtr Pixels
+        => (IntPtr)_pixels;
+
+    public ReadOnlySpan<byte> Span
+        => new(_pixels, (int)_slicePitch);
 
     public ErrorCode Save(string path, DDSParseFlags flags = DDSParseFlags.None)
         => image_save_to_dds_file(this, flags, path);

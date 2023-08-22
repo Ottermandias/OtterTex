@@ -50,6 +50,19 @@ public partial class ScratchImage : IDisposable
     public unsafe ReadOnlySpan<byte> Pixels
         => new(_data.Data, (int)_data.Size);
 
+    // Obtain the offsets of every sub-image into the shared pixel byte array.
+    public unsafe int[] ImagePixelOffsets
+    {
+        get
+        {
+            var ret = new int[_data.NumImages];
+            for (var i = 0; i < (int)_data.NumImages; ++i)
+                ret[i] = (int)((byte*)_data.Image[i].Pixels - _data.Data);
+
+            return ret;
+        }
+    }
+
     public ref readonly TexMeta Meta
         => ref _data.Meta;
 

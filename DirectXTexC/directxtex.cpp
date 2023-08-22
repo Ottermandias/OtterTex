@@ -655,4 +655,9 @@ API ERROR_CODE scratchimage_compute_normal_map(const void* images, SIZE num_imag
                                         *static_cast<DirectX::ScratchImage*>(scratch_image)));
 }
 
+API void copy_array(void* target, void* source, SIZE size)
+{
+    std::memcpy(target, source, static_cast<size_t>(size));
+}
+
 // Skipping Rect, Transform, WIC Utility, D11 Textures and WIC saving.

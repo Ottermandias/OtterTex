@@ -109,6 +109,28 @@ public partial class ScratchImage
     public static ScratchImage Initialize3D(ReadOnlySpan<Image> images, ColorPaletteFlags flags = ColorPaletteFlags.None)
         => Initialize3D(images, out var image, flags).ThrowIfError(image);
 
+    public static unsafe ErrorCode FromRGBA(ReadOnlySpan<byte> data, int width, int height, out ScratchImage scratchImage)
+    {
+        var ec = Initialize2D(DXGIFormat.R8G8B8A8UNorm, width, height, 1, 1, out scratchImage);
+        if (!ec)
+            return ec;
+
+        var size = width * height * 4;
+        if (data.Length < size || scratchImage.Pixels.Length < size)
+            return Marshal.GetHRForException(new ArgumentOutOfRangeException());
+
+        var pixels = scratchImage._data.Data;
+        fixed (byte* ptr = data)
+        {
+            copy_array((IntPtr)pixels, (IntPtr)ptr, (ulong)size);
+        }
+
+        return ErrorCode.Ok;
+    }
+
+    public static ScratchImage FromRGBA(ReadOnlySpan<byte> data, int width, int height)
+        => FromRGBA(data, width, height, out var s).ThrowIfError(s);
+
     // @formatter:off
 
     [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize(ref ScratchImageData data, in TexMeta meta, ColorPaletteFlags flags);
@@ -120,5 +142,6 @@ public partial class ScratchImage
     [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize_array_from_images(ref ScratchImageData data, IntPtr images, ulong numImages, bool allow1D, ColorPaletteFlags flags);
     [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize_cube_from_images(ref ScratchImageData data, IntPtr images, ulong numImages, ColorPaletteFlags flags);
     [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize_3D_from_images(ref ScratchImageData data, IntPtr images, ulong depth, ColorPaletteFlags flags);
+    [DllImport("DirectXTexC.dll")] private static extern void copy_array(IntPtr target, IntPtr source, ulong size);
     // @formatter:on
 }
