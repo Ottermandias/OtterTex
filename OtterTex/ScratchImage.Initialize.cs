@@ -133,15 +133,15 @@ public partial class ScratchImage
 
     // @formatter:off
 
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize(ref ScratchImageData data, in TexMeta meta, ColorPaletteFlags flags);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize1D(ref ScratchImageData data, DXGIFormat fmt, ulong length, ulong arraySize, ulong mipLevels, ColorPaletteFlags flags);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize2D(ref ScratchImageData data, DXGIFormat fmt, ulong width, ulong height, ulong arraySize, ulong mipLevels, ColorPaletteFlags flags);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize3D(ref ScratchImageData data, DXGIFormat fmt, ulong width, ulong height, ulong depth, ulong mipLevels, ColorPaletteFlags flags);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize_cube(ref ScratchImageData data, DXGIFormat fmt, ulong width, ulong height, ulong numCubes, ulong mipLevels, ColorPaletteFlags flags);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize_from_image(ref ScratchImageData data, in Image image, bool allow1D, ColorPaletteFlags flags);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize_array_from_images(ref ScratchImageData data, IntPtr images, ulong numImages, bool allow1D, ColorPaletteFlags flags);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize_cube_from_images(ref ScratchImageData data, IntPtr images, ulong numImages, ColorPaletteFlags flags);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_initialize_3D_from_images(ref ScratchImageData data, IntPtr images, ulong depth, ColorPaletteFlags flags);
-    [DllImport("DirectXTexC.dll")] private static extern void copy_array(IntPtr target, IntPtr source, ulong size);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_initialize(ref ScratchImageData data, in TexMeta meta, ColorPaletteFlags flags);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_initialize1D(ref ScratchImageData data, DXGIFormat fmt, ulong length, ulong arraySize, ulong mipLevels, ColorPaletteFlags flags);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_initialize2D(ref ScratchImageData data, DXGIFormat fmt, ulong width, ulong height, ulong arraySize, ulong mipLevels, ColorPaletteFlags flags);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_initialize3D(ref ScratchImageData data, DXGIFormat fmt, ulong width, ulong height, ulong depth, ulong mipLevels, ColorPaletteFlags flags);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_initialize_cube(ref ScratchImageData data, DXGIFormat fmt, ulong width, ulong height, ulong numCubes, ulong mipLevels, ColorPaletteFlags flags);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_initialize_from_image(ref ScratchImageData data, in Image image, [MarshalAs(UnmanagedType.I1)]bool allow1D, ColorPaletteFlags flags);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_initialize_array_from_images(ref ScratchImageData data, IntPtr images, ulong numImages, [MarshalAs(UnmanagedType.I1)] bool allow1D, ColorPaletteFlags flags);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_initialize_cube_from_images(ref ScratchImageData data, IntPtr images, ulong numImages, ColorPaletteFlags flags);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_initialize_3D_from_images(ref ScratchImageData data, IntPtr images, ulong depth, ColorPaletteFlags flags);
+    [LibraryImport("DirectXTexC.dll")] private static partial void copy_array(IntPtr target, IntPtr source, ulong size);
     // @formatter:on
 }

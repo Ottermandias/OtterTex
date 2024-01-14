@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace OtterTex;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct TexMeta
+public partial struct TexMeta
 {
     private ulong                _width;
     private ulong                _height;
@@ -148,14 +148,14 @@ public struct TexMeta
         => NativeDll.Initialize();
 
     // @formatter:off
-    [DllImport(NativeDll.Name)] private static extern ulong texmetadata_compute_index(in TexMeta tex, ulong mip, ulong item, ulong slice);
-    [DllImport(NativeDll.Name)] private static extern ErrorCode texmetadata_get_from_dds_memory(IntPtr data, ulong size, DDSParseFlags flags, out TexMeta tex);
-    [DllImport(NativeDll.Name, CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_dds_file(string path, DDSParseFlags flags, out TexMeta tex);
-    [DllImport(NativeDll.Name)] private static extern ErrorCode texmetadata_get_from_hdr_memory(IntPtr data, ulong size, out TexMeta tex);
-    [DllImport(NativeDll.Name, CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_hdr_file(string path, out TexMeta tex);
-    [DllImport(NativeDll.Name)] private static extern ErrorCode texmetadata_get_from_tga_memory(IntPtr data, ulong size, TGAParseFlags flags, out TexMeta tex);
-    [DllImport(NativeDll.Name, CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_tga_file(string path, TGAParseFlags flags, out TexMeta tex);
-    [DllImport(NativeDll.Name)] private static extern ErrorCode texmetadata_get_from_wic_memory(IntPtr data, ulong size, WICParseFlags flags, out TexMeta tex);
-    [DllImport(NativeDll.Name, CharSet = CharSet.Unicode)] private static extern ErrorCode texmetadata_get_from_wic_file(string path, WICParseFlags flags, out TexMeta tex);
+    [LibraryImport(NativeDll.Name)] private static partial ulong texmetadata_compute_index(in TexMeta tex, ulong mip, ulong item, ulong slice);
+    [LibraryImport(NativeDll.Name)] private static partial ErrorCode texmetadata_get_from_dds_memory(IntPtr data, ulong size, DDSParseFlags flags, out TexMeta tex);
+    [LibraryImport(NativeDll.Name, StringMarshalling = StringMarshalling.Utf16)] private static partial ErrorCode texmetadata_get_from_dds_file(string path, DDSParseFlags flags, out TexMeta tex);
+    [LibraryImport(NativeDll.Name)] private static partial ErrorCode texmetadata_get_from_hdr_memory(IntPtr data, ulong size, out TexMeta tex);
+    [LibraryImport(NativeDll.Name, StringMarshalling = StringMarshalling.Utf16)] private static partial ErrorCode texmetadata_get_from_hdr_file(string path, out TexMeta tex);
+    [LibraryImport(NativeDll.Name)] private static partial ErrorCode texmetadata_get_from_tga_memory(IntPtr data, ulong size, TGAParseFlags flags, out TexMeta tex);
+    [LibraryImport(NativeDll.Name, StringMarshalling = StringMarshalling.Utf16)] private static partial ErrorCode texmetadata_get_from_tga_file(string path, TGAParseFlags flags, out TexMeta tex);
+    [LibraryImport(NativeDll.Name)] private static partial ErrorCode texmetadata_get_from_wic_memory(IntPtr data, ulong size, WICParseFlags flags, out TexMeta tex);
+    [LibraryImport(NativeDll.Name, StringMarshalling = StringMarshalling.Utf16)] private static partial ErrorCode texmetadata_get_from_wic_file(string path, WICParseFlags flags, out TexMeta tex);
     // @formatter:on
 }

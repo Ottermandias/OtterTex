@@ -86,10 +86,10 @@ public partial class ScratchImage : IDisposable
         => NativeDll.Initialize();
 
     // @formatter:off
-    [DllImport(NativeDll.Name)] private static extern void scratchimage_ctor(ref ScratchImageData data);
-    [DllImport(NativeDll.Name)] private static extern void scratchimage_release(ref ScratchImageData data);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool scratchimage_override_format(ref ScratchImageData data, DXGIFormat fmt);
-    [DllImport(NativeDll.Name)] private static extern IntPtr scratchimage_get_image(ref ScratchImageData data, ulong mip, ulong item, ulong slice);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool scratchimage_is_alpha_all_opaque(ref ScratchImageData data);
+    [LibraryImport(NativeDll.Name)] private static partial void scratchimage_ctor(ref ScratchImageData data);
+    [LibraryImport(NativeDll.Name)] private static partial void scratchimage_release(ref ScratchImageData data);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool scratchimage_override_format(ref ScratchImageData data, DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)] private static partial IntPtr scratchimage_get_image(ref ScratchImageData data, ulong mip, ulong item, ulong slice);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool scratchimage_is_alpha_all_opaque(ref ScratchImageData data);
     // @formatter:on
 }

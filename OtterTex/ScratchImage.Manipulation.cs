@@ -117,16 +117,16 @@ public partial class ScratchImage
     }
 
     // @formatter:off
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_flip_rotate(IntPtr images, ulong numImages, in TexMeta meta, FlipRotateFlags flags, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_resize(IntPtr images, ulong numImages, in TexMeta meta, ulong width, ulong height, FilterFlags flags, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_convert(IntPtr images, ulong numImages, in TexMeta meta, DXGIFormat fmt, FilterFlags flags, float threshold, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_convert_to_single_plane(IntPtr images, ulong numImages, in TexMeta meta, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_generate_mipmaps(IntPtr images, ulong numImages, in TexMeta meta, FilterFlags flags, ulong levels, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_generate_mipmaps_3d(IntPtr images, ulong numImages, in TexMeta meta, FilterFlags flags, ulong levels, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_scale_mipmaps_alpha_for_coverage(IntPtr images, ulong numImages, in TexMeta meta, ulong item, float alphaReference, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_premultiply_alpha(IntPtr images, ulong numImages, in TexMeta meta, AlphaFlags flags, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_compress(IntPtr images, ulong numImages, in TexMeta meta, DXGIFormat fmt, CompressFlags flags, float threshold, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_decompress(IntPtr images, ulong numImages, in TexMeta meta, DXGIFormat fmt, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_compute_normal_map(IntPtr images, ulong numImages, in TexMeta meta, MapFlags flags, float amplitude, DXGIFormat fmt, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_flip_rotate(IntPtr images, ulong numImages, in TexMeta meta, FlipRotateFlags flags, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_resize(IntPtr images, ulong numImages, in TexMeta meta, ulong width, ulong height, FilterFlags flags, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_convert(IntPtr images, ulong numImages, in TexMeta meta, DXGIFormat fmt, FilterFlags flags, float threshold, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_convert_to_single_plane(IntPtr images, ulong numImages, in TexMeta meta, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_generate_mipmaps(IntPtr images, ulong numImages, in TexMeta meta, FilterFlags flags, ulong levels, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_generate_mipmaps_3d(IntPtr images, ulong numImages, in TexMeta meta, FilterFlags flags, ulong levels, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_scale_mipmaps_alpha_for_coverage(IntPtr images, ulong numImages, in TexMeta meta, ulong item, float alphaReference, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_premultiply_alpha(IntPtr images, ulong numImages, in TexMeta meta, AlphaFlags flags, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_compress(IntPtr images, ulong numImages, in TexMeta meta, DXGIFormat fmt, CompressFlags flags, float threshold, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_decompress(IntPtr images, ulong numImages, in TexMeta meta, DXGIFormat fmt, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_compute_normal_map(IntPtr images, ulong numImages, in TexMeta meta, MapFlags flags, float amplitude, DXGIFormat fmt, ref ScratchImageData data);
     // @formatter:on
 }

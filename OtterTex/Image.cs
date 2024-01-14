@@ -37,6 +37,6 @@ public unsafe partial struct Image
     public ErrorCode Save(string path, DDSParseFlags flags = DDSParseFlags.None)
         => image_save_to_dds_file(this, flags, path);
 
-    [DllImport(NativeDll.Name, CharSet = CharSet.Unicode)]
-    private static extern ErrorCode image_save_to_dds_file(in Image image, DDSParseFlags flags, string path);
+    [LibraryImport(NativeDll.Name, StringMarshalling = StringMarshalling.Utf16)]
+    private static partial ErrorCode image_save_to_dds_file(in Image image, DDSParseFlags flags, string path);
 }

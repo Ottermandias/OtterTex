@@ -129,7 +129,7 @@ public enum DXGIFormat : uint
     ForceUInt = 0xffffffff,
 }
 
-public static class DXGIExtensions
+public static partial class DXGIExtensions
 {
     static DXGIExtensions()
         => NativeDll.Initialize();
@@ -178,27 +178,27 @@ public static class DXGIExtensions
 
 
     // @formatter:off
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_valid(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_compressed(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_packed(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_video(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_planar(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_palettized(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_depth_stencil(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_srgb(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_bgr(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_typeless_partial(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_is_typeless_full(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static extern bool dxgiformat_has_alpha(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)] private static extern ulong dxgiformat_bits_per_pixel(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)] private static extern ulong dxgiformat_bits_per_color(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)] private static extern DXGIFormat dxgiformat_make_srgb(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)] private static extern DXGIFormat dxgiformat_make_linear(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)] private static extern DXGIFormat dxgiformat_make_typeless(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)] private static extern DXGIFormat dxgiformat_make_typeless_unorm(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)] private static extern DXGIFormat dxgiformat_make_typeless_float(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)] private static extern FormatType dxgiformat_data_type(DXGIFormat fmt);
-    [DllImport(NativeDll.Name)] private static extern ErrorCode dxgiformat_compute_pitch(DXGIFormat fmt, ulong width, ulong height, ref ulong rowPitch, ref ulong slicePitch, ColorPaletteFlags flags);
-    [DllImport(NativeDll.Name)] private static extern ulong dxgiformat_compute_scanlines(DXGIFormat fmt, ulong height);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_valid(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_compressed(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_packed(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_video(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_planar(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_palettized(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_depth_stencil(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_srgb(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_bgr(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_typeless_partial(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_is_typeless_full(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)][return: MarshalAs(UnmanagedType.I1)] private static partial bool dxgiformat_has_alpha(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)] private static partial ulong dxgiformat_bits_per_pixel(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)] private static partial ulong dxgiformat_bits_per_color(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)] private static partial DXGIFormat dxgiformat_make_srgb(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)] private static partial DXGIFormat dxgiformat_make_linear(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)] private static partial DXGIFormat dxgiformat_make_typeless(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)] private static partial DXGIFormat dxgiformat_make_typeless_unorm(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)] private static partial DXGIFormat dxgiformat_make_typeless_float(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)] private static partial FormatType dxgiformat_data_type(DXGIFormat fmt);
+    [LibraryImport(NativeDll.Name)] private static partial ErrorCode dxgiformat_compute_pitch(DXGIFormat fmt, ulong width, ulong height, ref ulong rowPitch, ref ulong slicePitch, ColorPaletteFlags flags);
+    [LibraryImport(NativeDll.Name)] private static partial ulong dxgiformat_compute_scanlines(DXGIFormat fmt, ulong height);
     // @formatter:on
 }

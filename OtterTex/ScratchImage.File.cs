@@ -101,14 +101,14 @@ public partial class ScratchImage
         => scratchimage_save_to_dds_file((IntPtr)_data.Image, _data.NumImages, in _data.Meta, flags, path);
 
     // @formatter:off
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_load_from_dds_memory(IntPtr source, ulong size, DDSParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_load_from_tga_memory(IntPtr source, ulong size, TGAParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_load_from_wic_memory(IntPtr source, ulong size, WICParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll")] private static extern ErrorCode scratchimage_load_from_hdr_memory(IntPtr source, ulong size, ref TexMeta meta, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode scratchimage_load_from_dds_file(string path, DDSParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode scratchimage_load_from_tga_file(string path, TGAParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode scratchimage_load_from_wic_file(string path, WICParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode scratchimage_load_from_hdr_file(string path, ref TexMeta meta, ref ScratchImageData data);
-    [DllImport("DirectXTexC.dll", CharSet = CharSet.Unicode)] private static extern ErrorCode scratchimage_save_to_dds_file(IntPtr images, ulong numImages, in TexMeta meta, DDSParseFlags flags, string path);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_load_from_dds_memory(IntPtr source, ulong size, DDSParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_load_from_tga_memory(IntPtr source, ulong size, TGAParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_load_from_wic_memory(IntPtr source, ulong size, WICParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll")] private static partial ErrorCode scratchimage_load_from_hdr_memory(IntPtr source, ulong size, ref TexMeta meta, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll", StringMarshalling = StringMarshalling.Utf16)] private static partial ErrorCode scratchimage_load_from_dds_file(string path, DDSParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll", StringMarshalling = StringMarshalling.Utf16)] private static partial ErrorCode scratchimage_load_from_tga_file(string path, TGAParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll", StringMarshalling = StringMarshalling.Utf16)] private static partial ErrorCode scratchimage_load_from_wic_file(string path, WICParseFlags flags, ref TexMeta meta, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll", StringMarshalling = StringMarshalling.Utf16)] private static partial ErrorCode scratchimage_load_from_hdr_file(string path, ref TexMeta meta, ref ScratchImageData data);
+    [LibraryImport("DirectXTexC.dll", StringMarshalling = StringMarshalling.Utf16)] private static partial ErrorCode scratchimage_save_to_dds_file(IntPtr images, ulong numImages, in TexMeta meta, DDSParseFlags flags, string path);
     // @formatter:on
 }
